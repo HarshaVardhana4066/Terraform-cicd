@@ -8,6 +8,15 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      action:
+        description: "Choose Terraform action (apply or destroy)"
+        required: true
+        default: "apply"
+        type: choice
+        options:
+          - apply
+          - destroy
  
 jobs:
   setup-infra: 
@@ -17,12 +26,11 @@ jobs:
       id-token: write
       contents: read
 
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
              
-      - name: configure AWS credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
@@ -36,16 +44,28 @@ jobs:
       - name: Terraform Init
         run: terraform init 
 
-      - name: Terraform validate
+      - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform format
+      - name: Terraform Format
         run: terraform fmt -recursive  
 
-      - name: Terraform plan
-        run: terraform plan 
+      - name: Terraform Plan
+        run: terraform plan
 
-      - name: Terraform apply
-        run: terraform apply -auto-approve  
+      # ✅ Unified step for Apply or Destroy
+      - name: Terraform Apply/Destroy
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            action="${{ github.event.inputs.action }}"
+          else
+            action="apply"
+          fi
 
+          echo "Selected action: $action"
 
+          if [ "$action" = "destroy" ]; then
+            terraform destroy -auto-approve
+          else
+            terraform apply -auto-approve
+          fi
