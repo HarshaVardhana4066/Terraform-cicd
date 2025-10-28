@@ -48,4 +48,4 @@ jobs:
 
       # Verify pods
       - name: Verify deployment
-        run: kubectl get pods -n default
+        run: kubectl get all -n dev
