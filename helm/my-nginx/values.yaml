@@ -5,6 +5,6 @@ image:
   repository: nginx
   tag: latest
 
-Service:
+service:
   port: 8080
   type: LoadBalancer 
