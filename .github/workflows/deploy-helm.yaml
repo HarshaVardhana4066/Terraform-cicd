@@ -43,9 +43,8 @@ jobs:
       - name: Deploy NGINX with Helm
         run: |
           helm upgrade --install my-nginx ./helm/my-nginx \
-            --namespace default \
-            --create-namespace \
-            -f ./helm/my-nginx/values.yaml
+            --namespace dev \
+            -f ./helm/my-nginx/dev-values.yaml
 
       # Verify pods
       - name: Verify deployment
