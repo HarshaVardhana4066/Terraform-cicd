@@ -1,0 +1,10 @@
+replicaCount: 2
+
+
+image: 
+  repository: nginx
+  tag: latest
+
+Service:
+  port: 8080
+  type: LoadBalancer 

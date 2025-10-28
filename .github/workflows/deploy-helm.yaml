@@ -1,0 +1,53 @@
+name: eks-Deployment
+
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main    
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions: 
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+             
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-south-1
+
+
+ # Update kubeconfig to connect to existing cluster
+      - name: Update kubeconfig for EKS
+        run: aws eks update-kubeconfig --region ap-south-1 --name demo-eks
+
+      # Setup Helm
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.0
+
+      # Deploy application using Helm
+      - name: Deploy NGINX with Helm
+        run: |
+          helm upgrade --install my-nginx ./helm/my-nginx \
+            --namespace default \
+            --create-namespace \
+            -f ./helm/my-nginx/values.yaml
+
+      # Optional - Verify pods
+      - name: Verify deployment
+        run: kubectl get pods -n default              
+
+
