@@ -7,4 +7,4 @@ image:
 
 service:
   port: 80
-  type: NodePort 
+  type: LoadBalancer
