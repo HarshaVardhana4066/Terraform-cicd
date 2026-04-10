@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        terraform 'terraform1.6'
+    }
+
     parameters {
         choice(
             name: 'ACTION',
