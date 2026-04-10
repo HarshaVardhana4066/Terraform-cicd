@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'ACTION',
+            choices: ['apply', 'destroy'],
+            description: 'Select Terraform action'
+        )
+    }
+
+    environment {
+        AWS_DEFAULT_REGION = 'us-north-1'
+    }
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/HarshaVardhana4066/Terraform-cicd.git'
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                sh 'terraform init'
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                sh "terraform plan"
+            }
+        }
+
+        stage('Approval (Only for Destroy)') {
+            when {
+                expression { params.ACTION == 'destroy' }
+            }
+            steps {
+                input message: 'Are you sure you want to DESTROY EC2?'
+            }
+        }
+
+        stage('Apply or Destroy') {
+            steps {
+                script {
+                    if (params.ACTION == 'apply') {
+                        sh 'terraform apply -auto-approve'
+                    } else {
+                        sh 'terraform destroy -auto-approve'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Terraform ${params.ACTION} completed successfully"
+        }
+        failure {
+            echo "❌ Terraform ${params.ACTION} failed"
+        }
+    }
+}
