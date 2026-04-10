@@ -1,5 +1,5 @@
 variable "aws_region" {
-  default = "ap-south-1"
+  default = "eu-north-1"
 }
 
 variable "ami" {
@@ -7,5 +7,5 @@ variable "ami" {
 }
 
 variable "instance_type" {
-  default = "t2.micro"
+  default = "t3.micro"
 }
