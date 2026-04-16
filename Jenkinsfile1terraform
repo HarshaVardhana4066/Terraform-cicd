@@ -21,7 +21,7 @@ pipeline {
 
          stage('test from main') {
             steps {
-                echo "testing from main branch to check wheekhook"
+                echo "testing from main branch to check wheekhok"
             }
         }
 
