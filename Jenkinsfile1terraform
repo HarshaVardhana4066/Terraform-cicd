@@ -34,7 +34,7 @@ pipeline {
 
         stage('check'){
             steps {
-                echo "Testing to check i had created dev branch"
+                echo "Testing to check i had created dev branch for webhook"
             }
         }
 
