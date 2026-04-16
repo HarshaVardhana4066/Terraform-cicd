@@ -19,6 +19,12 @@ pipeline {
 
     stages {
 
+         stage('test from main') {
+            steps {
+                echo "testing from main branch to check wheekhook"
+            }
+        }
+
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
