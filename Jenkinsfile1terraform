@@ -32,6 +32,12 @@ pipeline {
             }
         }
 
+        stage('check'){
+            steps {
+                echo "Testing to check i had created dev branch"
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 sh 'terraform init'
